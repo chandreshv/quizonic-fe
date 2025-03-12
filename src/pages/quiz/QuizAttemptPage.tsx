@@ -89,7 +89,14 @@ export const QuizAttemptPage = () => {
       <div className="question-container">
         <h2 className="question-text">{currentQuestion.text}</h2>
 
-        <div className="space-y-3">
+        {/* Grid layout for options */}
+        <div 
+          className={`grid gap-4 ${
+            currentQuestion.options.length === 2 
+              ? 'grid-cols-1' // 1x1 grid for true-false
+              : 'grid-cols-1 md:grid-cols-2' // 2x2 grid for 4 options
+          }`}
+        >
           {currentQuestion.options.map((option, index) => (
             <button
               key={index}

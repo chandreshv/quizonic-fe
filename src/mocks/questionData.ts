@@ -70,6 +70,14 @@ export const mockQuestions: Record<string, Question[]> = {
       correctOption: 1,
       explanation: 'Mars is called the Red Planet because it looks red from Earth!',
     },
+    {
+      id: '3',
+      quizId: '3',
+      text: 'Is the Earth flat?',
+      options: ['True', 'False'],
+      correctOption: 1,
+      explanation: 'No, the Earth is not flat! It is shaped like a sphere (a ball).',
+    },
   ],
   '4': [ // English Word Fun
     {
@@ -87,6 +95,14 @@ export const mockQuestions: Record<string, Question[]> = {
       options: ['Dog', 'Cat', 'Bird', 'Fish'],
       correctOption: 1,
       explanation: 'Cats say "meow"! Each animal makes its own special sound.',
+    },
+    {
+      id: '3',
+      quizId: '4',
+      text: 'Is the letter "A" a vowel?',
+      options: ['True', 'False'],
+      correctOption: 0,
+      explanation: 'Yes, "A" is a vowel! The vowels in English are A, E, I, O, and U.',
     },
   ],
 };
