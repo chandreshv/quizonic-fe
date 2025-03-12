@@ -100,7 +100,7 @@ export const GuestHomePage = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Kid-Friendly</h3>
               <p className="text-gray-600">
-                Age-appropriate content for children 5-15 years
+                Age-appropriate content
               </p>
             </div>
             <div>
@@ -109,7 +109,7 @@ export const GuestHomePage = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Safe & Secure</h3>
               <p className="text-gray-600">
-                Child-safe environment with no ads
+                No ads for kids
               </p>
             </div>
           </div>
