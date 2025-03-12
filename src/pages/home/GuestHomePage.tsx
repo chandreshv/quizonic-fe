@@ -1,10 +1,12 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { quizService } from '../../api/quizService';
 import { QuizCard } from '../../components/quiz/QuizCard';
 
 export const GuestHomePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const guestName = location.state?.guestName || 'Guest';
   const { data: quizzes, isLoading } = useQuery({
     queryKey: ['quizzes'],
     queryFn: quizService.getQuizzes,
@@ -17,25 +19,11 @@ export const GuestHomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Welcome to Quizonic! 🎉
+              Welcome to Quizonic, {guestName}! 🎉
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Fun quizzes for curious minds aged 5-15 years
+              Fun quizzes for curious minds
             </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => navigate('/register')}
-                className="btn btn-primary"
-              >
-                Create Account
-              </button>
-              <button
-                onClick={() => navigate('/login')}
-                className="btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              >
-                Sign In
-              </button>
-            </div>
           </div>
         </div>
       </div>

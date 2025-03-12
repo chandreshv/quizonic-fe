@@ -1,16 +1,36 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type TabType = 'user' | 'guest';
 
 export const LoginOptions = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('user');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [guestName, setGuestName] = useState('');
+  const [error, setError] = useState('');
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
+    setError('');
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (activeTab === 'guest') {
+      if (!guestName.trim()) {
+        setError('Please enter your temporary name');
+        return;
+      }
+      // Navigate to guest home page with the guest name
+      navigate('/guest', { state: { guestName } });
+    } else {
+      // Handle user login (not implemented yet)
+      console.log('User login with:', { email, password });
+    }
   };
 
   return (
@@ -51,7 +71,12 @@ export const LoginOptions = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <form onSubmit={handleSubmit} className="p-6">
+            {error && (
+              <div className="mb-4 p-2 text-sm text-red-700 bg-red-100 rounded-md">
+                {error}
+              </div>
+            )}
             {activeTab === 'user' ? (
               <div className="space-y-4">
                 <div>
@@ -105,11 +130,12 @@ export const LoginOptions = () => {
 
             {/* Login Button */}
             <button
+              type="submit"
               className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              Login
+              {activeTab === 'guest' ? 'Continue as Guest' : 'Login'}
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Sign in with Gmail */}
