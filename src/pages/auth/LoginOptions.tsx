@@ -9,6 +9,7 @@ export const LoginOptions = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [guestName, setGuestName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [error, setError] = useState('');
 
   const handleTabChange = (tab: TabType) => {
@@ -25,8 +26,23 @@ export const LoginOptions = () => {
         setError('Please enter your temporary name');
         return;
       }
-      // Navigate to guest home page with the guest name
-      navigate('/guest', { state: { guestName } });
+      if (!dateOfBirth) {
+        setError('Please enter your date of birth');
+        return;
+      }
+      
+      // Calculate age
+      const birthDate = new Date(dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      
+      // Navigate to guest home page with the guest name and age
+      navigate('/guest', { state: { guestName, age } });
     } else {
       // Handle user login (not implemented yet)
       console.log('User login with:', { email, password });
@@ -111,20 +127,36 @@ export const LoginOptions = () => {
                 </div>
               </div>
             ) : (
-              <div>
-                <label htmlFor="guestName" className="block text-sm font-medium text-gray-700">
-                  Your Name
-                </label>
-                <input
-                  id="guestName"
-                  name="guestName"
-                  type="text"
-                  required
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                  placeholder="Enter your temporary name"
-                />
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="guestName" className="block text-sm font-medium text-gray-700">
+                    Your Name
+                  </label>
+                  <input
+                    id="guestName"
+                    name="guestName"
+                    type="text"
+                    required
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                    placeholder="Enter your temporary name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                    Date of Birth
+                  </label>
+                  <input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    required
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  />
+                </div>
               </div>
             )}
 

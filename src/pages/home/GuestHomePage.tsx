@@ -7,6 +7,10 @@ export const GuestHomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const guestName = location.state?.guestName || 'Guest';
+  const age = location.state?.age || 10; // Default to 10 if age is not provided
+  
+  // Determine age group for content filtering
+  const ageGroup = age < 8 ? 'young' : age < 12 ? 'middle' : 'teen';
   const { data: quizzes, isLoading } = useQuery({
     queryKey: ['quizzes'],
     queryFn: quizService.getQuizzes,
@@ -21,8 +25,12 @@ export const GuestHomePage = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Welcome to Quizonic, {guestName}! 🎉
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Fun quizzes for curious minds
+            <p className="text-xl text-gray-600 mb-2">
+              Fun quizzes for curious minds aged 5-15 years
+            </p>
+            <p className="text-md text-gray-500 mb-8">
+              Age: {age} years old | Content tailored for {ageGroup === 'young' ? 'younger kids (5-7)' : 
+                ageGroup === 'middle' ? 'middle age kids (8-11)' : 'teens (12-15)'}
             </p>
           </div>
         </div>
@@ -32,10 +40,14 @@ export const GuestHomePage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Start Playing Now! 🚀
+            {ageGroup === 'young' ? 'Let\'s Play and Learn! 🚀' : 
+             ageGroup === 'middle' ? 'Start Playing Now! 🚀' : 
+             'Challenge Yourself! 🚀'}
           </h2>
           <p className="text-lg text-gray-600">
-            No account needed - just pick a quiz and have fun!
+            {ageGroup === 'young' ? 'Fun and colorful quizzes just for you!' : 
+             ageGroup === 'middle' ? 'No account needed - just pick a quiz and have fun!' : 
+             'Test your knowledge with our challenging quizzes!'}
           </p>
         </div>
 
@@ -45,7 +57,21 @@ export const GuestHomePage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizzes?.map((quiz) => (
+            {quizzes?.filter(quiz => {
+              // If quiz doesn't have ageRange defined, show it for all age groups
+              if (!quiz.ageRange) {
+                return true;
+              }
+              
+              // Filter quizzes based on age group
+              if (ageGroup === 'young') {
+                return (quiz.ageRange.min || 5) <= 7;
+              } else if (ageGroup === 'middle') {
+                return (quiz.ageRange.min || 5) <= 11 && (quiz.ageRange.max || 15) >= 8;
+              } else {
+                return (quiz.ageRange.max || 15) >= 12;
+              }
+            }).map((quiz) => (
               <QuizCard key={quiz.id} quiz={quiz} />
             ))}
           </div>

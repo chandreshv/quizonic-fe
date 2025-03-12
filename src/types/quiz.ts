@@ -6,6 +6,10 @@ export interface Quiz {
   totalQuestions: number;
   category: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  ageRange?: {
+    min: number;
+    max: number;
+  };
 }
 
 export interface Question {

@@ -9,6 +9,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 10,
     category: 'Mathematics',
     difficulty: 'EASY',
+    ageRange: {
+      min: 5,
+      max: 8
+    }
   },
   {
     id: '2',
@@ -18,6 +22,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 15,
     category: 'Science',
     difficulty: 'EASY',
+    ageRange: {
+      min: 6,
+      max: 10
+    }
   },
   {
     id: '3',
@@ -27,6 +35,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 12,
     category: 'Science',
     difficulty: 'MEDIUM',
+    ageRange: {
+      min: 8,
+      max: 12
+    }
   },
   {
     id: '4',
@@ -36,6 +48,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 10,
     category: 'English',
     difficulty: 'EASY',
+    ageRange: {
+      min: 7,
+      max: 11
+    }
   },
   {
     id: '5',
@@ -45,6 +61,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 15,
     category: 'Geography',
     difficulty: 'MEDIUM',
+    ageRange: {
+      min: 9,
+      max: 14
+    }
   },
   {
     id: '6',
@@ -54,6 +74,10 @@ export const mockQuizzes: Quiz[] = [
     totalQuestions: 12,
     category: 'Science',
     difficulty: 'MEDIUM',
+    ageRange: {
+      min: 10,
+      max: 15
+    }
   },
 ];
 
