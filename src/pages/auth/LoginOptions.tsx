@@ -1,6 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+type TabType = 'user' | 'guest';
+
 export const LoginOptions = () => {
+  const [activeTab, setActiveTab] = useState<TabType>('user');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [guestName, setGuestName] = useState('');
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -9,20 +21,99 @@ export const LoginOptions = () => {
             Welcome to Quizonic
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Please choose a login option
+            Please login to continue
           </p>
         </div>
 
-        <div className="mt-8 space-y-4">
-          {/* ID and Password with login button */}
-          <Link 
-            to="/login" 
-            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
-            Login with ID and Password
-          </Link>
+        <div className="mt-8 bg-white shadow-md rounded-lg overflow-hidden">
+          {/* Tabs */}
+          <div className="flex border-b">
+            <button
+              className={`flex-1 py-3 px-4 text-center font-medium ${
+                activeTab === 'user'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => handleTabChange('user')}
+            >
+              User
+            </button>
+            <button
+              className={`flex-1 py-3 px-4 text-center font-medium ${
+                activeTab === 'guest'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => handleTabChange('guest')}
+            >
+              Guest
+            </button>
+          </div>
 
-          {/* Sign in with Gmail */}
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === 'user' ? (
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="guestName" className="block text-sm font-medium text-gray-700">
+                  Your Name
+                </label>
+                <input
+                  id="guestName"
+                  name="guestName"
+                  type="text"
+                  required
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  placeholder="Enter your temporary name"
+                />
+              </div>
+            )}
+
+            {/* Login Button */}
+            <button
+              className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+
+        {/* Sign in with Gmail */}
+        <div className="mt-4">
           <button 
             className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
           >
@@ -33,14 +124,6 @@ export const LoginOptions = () => {
             </span>
             Sign in with Gmail
           </button>
-
-          {/* Continue as guest */}
-          <Link 
-            to="/guest" 
-            className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
-            Continue as Guest
-          </Link>
         </div>
       </div>
     </div>
