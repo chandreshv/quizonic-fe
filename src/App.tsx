@@ -9,6 +9,7 @@ import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { QuizPage } from './pages/quiz/QuizPage';
 import { QuizAttemptPage } from './pages/quiz/QuizAttemptPage';
 import { GuestHomePage } from './pages/home/GuestHomePage';
+import { LoginOptions } from './pages/auth/LoginOptions';
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -28,7 +29,8 @@ function App() {
         <Router>
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<GuestHomePage />} />
+            <Route path="/" element={<LoginOptions />} />
+            <Route path="/guest" element={<GuestHomePage />} />
             <Route
               path="/quiz/:id"
               element={
