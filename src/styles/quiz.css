@@ -39,6 +39,42 @@
   background: #EEF2FF;
 }
 
+.option-button.correct {
+  border-color: #10B981;
+  background: #ECFDF5;
+  color: #065F46;
+  pointer-events: none;
+}
+
+.option-button.incorrect {
+  border-color: #EF4444;
+  background: #FEF2F2;
+  color: #991B1B;
+  pointer-events: none;
+}
+
+.option-button.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.option-button.correct {
+  animation: pulse 1.5s infinite;
+}
+
 /* Grid layout styles */
 @media (min-width: 768px) {
   .option-button {
