@@ -177,7 +177,14 @@ export const QuizAttemptPage = () => {
     
     try {
       const result = await quizService.finishQuiz(attemptId);
-      navigate(`/quiz/${quizId}/result/${attemptId}`, { state: { result } });
+      navigate(`/quiz/${quizId}/result/${attemptId}`, { 
+        state: { 
+          result: {
+            ...result,
+            totalQuestions: questions?.length || 10
+          } 
+        } 
+      });
     } catch (error) {
       console.error('Failed to finish quiz:', error);
     }

@@ -8,6 +8,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { QuizPage } from './pages/quiz/QuizPage';
 import { QuizAttemptPage } from './pages/quiz/QuizAttemptPage';
+import { QuizResultPage } from './pages/quiz/QuizResultPage';
 import { GuestHomePage } from './pages/home/GuestHomePage';
 import { LoginOptions } from './pages/auth/LoginOptions';
 
@@ -42,6 +43,10 @@ function App() {
             <Route
               path="/quiz/:quizId/attempt/:attemptId"
               element={<QuizAttemptPage />}
+            />
+            <Route
+              path="/quiz/:quizId/result/:attemptId"
+              element={<QuizResultPage />}
             />
 
             {/* Auth routes */}
