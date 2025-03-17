@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { quizService } from '../../api/quizService';
@@ -14,6 +14,9 @@ export const QuizAttemptPage = () => {
   const [answerChecked, setAnswerChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [timerHeight, setTimerHeight] = useState(0);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const questionTimerDuration = 10000; // 10 seconds in milliseconds
 
   const { data: questions, isLoading } = useQuery({
     queryKey: ['quiz-questions', quizId],
@@ -24,6 +27,42 @@ export const QuizAttemptPage = () => {
   const isLastQuestion = currentQuestionIndex === (questions?.length ?? 0) - 1;
   const progress = ((currentQuestionIndex + 1) / (questions?.length ?? 1)) * 100;
 
+  // Effect to handle question timer
+  useEffect(() => {
+    // Reset timer when question changes or answer is checked
+    setTimerHeight(0);
+    
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+    
+    if (!answerChecked) {
+      // Start the timer
+      const startTime = Date.now();
+      const intervalTime = 100; // Update every 100ms for smooth animation
+      
+      timerIntervalRef.current = setInterval(() => {
+        const elapsedTime = Date.now() - startTime;
+        const progress = Math.min(elapsedTime / questionTimerDuration, 1);
+        setTimerHeight(progress * 100);
+        
+        // If timer reaches 100%, auto-select a random option if none selected
+        if (progress >= 1 && selectedOption === null && !answerChecked) {
+          // Time's up - select a random option
+          const randomOption = Math.floor(Math.random() * (currentQuestion?.options.length || 4));
+          handleOptionSelect(randomOption);
+        }
+      }, intervalTime);
+    }
+    
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
+  }, [currentQuestionIndex, answerChecked]);
+  
   // Effect to move to next question after delay
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -111,7 +150,6 @@ export const QuizAttemptPage = () => {
         <div className="question-number">
           Question {currentQuestionIndex + 1} of {questions?.length}
         </div>
-        <div className="timer">Time: 29:45</div>
       </div>
 
       <div className="progress-bar">
@@ -122,6 +160,14 @@ export const QuizAttemptPage = () => {
       </div>
 
       <div className="question-container">
+        {/* Vertical timer */}
+        <div className="vertical-timer-container">
+          <div 
+            className="vertical-timer-fill"
+            style={{ height: `${timerHeight}%` }}
+          />
+        </div>
+        
         <h2 className="question-text">{currentQuestion.text}</h2>
 
         {/* Grid layout for options */}

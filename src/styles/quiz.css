@@ -106,13 +106,36 @@
   border-bottom: 2px solid #e2e8f0;
 }
 
-.timer {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #4F46E5;
-  padding: 0.5rem 1rem;
-  background: #EEF2FF;
-  border-radius: 8px;
+/* Vertical timer styles */
+.vertical-timer-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.vertical-timer-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, #4F46E5, #6366F1);
+  border-radius: 3px;
+  transition: height 0.1s linear;
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.5);
+}
+
+@keyframes timerAnimation {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
 }
 
 .question-number {
@@ -157,4 +180,6 @@
 
 .question-container {
   animation: fadeIn 0.3s ease-out;
+  position: relative;
+  padding-left: 20px; /* Add padding to make room for the vertical timer */
 }
