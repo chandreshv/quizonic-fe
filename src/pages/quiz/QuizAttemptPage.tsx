@@ -28,25 +28,49 @@ export const QuizAttemptPage = () => {
   const isLastQuestion = currentQuestionIndex === (questions?.length ?? 0) - 1;
   const progress = ((currentQuestionIndex + 1) / (questions?.length ?? 1)) * 100;
 
+  // Function to move to next question
+  const moveToNextQuestion = () => {
+    console.log('Moving to next question', { 
+      isLastQuestion, 
+      currentQuestionIndex, 
+      totalQuestions: questions?.length 
+    });
+
+    if (isLastQuestion) {
+      handleFinishQuiz();
+    } else {
+      setCurrentQuestionIndex(prev => {
+        console.log('Previous index:', prev, 'New index:', prev + 1);
+        return prev + 1;
+      });
+      setSelectedOption(null);
+      setAnswerChecked(false);
+      setIsCorrect(false);
+      setShowExplanation(false);
+    }
+  };
+
   // Function to handle when time is up
   const handleTimeUp = async () => {
+    console.log('Time up called', { 
+      answerChecked, 
+      isSubmitting, 
+      currentQuestion, 
+      attemptId 
+    });
+
     if (answerChecked || isSubmitting || !currentQuestion || !attemptId) return;
     
     setIsSubmitting(true);
+    setSelectedOption(-1);
     
     try {
       // Submit with a special value (-1) to indicate time's up / not attempted
       await quizService.submitAnswer(attemptId, currentQuestion.id, -1);
       
-      // Set selected option to -1 to indicate time's up
-      setSelectedOption(-1);
-      
-      // Mark as incorrect
-      setIsCorrect(false);
-      setAnswerChecked(true);
-      
-      // Show a message that time is up
-      setShowExplanation(true);
+      // Award 0 marks and immediately move to next question
+      // without showing explanation
+      moveToNextQuestion();
     } catch (error) {
       console.error('Failed to submit answer:', error);
     } finally {
@@ -58,6 +82,7 @@ export const QuizAttemptPage = () => {
   useEffect(() => {
     // Reset timer when question changes or answer is checked
     setTimerHeight(0);
+    setIsTimerWarning(false);
     
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
@@ -75,14 +100,18 @@ export const QuizAttemptPage = () => {
         setTimerHeight(progress * 100);
         
         // Set warning state when timer reaches 80%
-        if (progress >= 0.8 && !isTimerWarning) {
+        if (progress >= 0.8) {
           setIsTimerWarning(true);
-        } else if (progress < 0.8 && isTimerWarning) {
-          setIsTimerWarning(false);
         }
         
         // If timer reaches 100% and no option selected, mark as not attempted
         if (progress >= 1 && selectedOption === null && !answerChecked) {
+          console.log('Timer reached 100%', { 
+            currentQuestionIndex, 
+            selectedOption, 
+            answerChecked 
+          });
+          
           // Time's up - mark as not attempted
           handleTimeUp();
           
@@ -100,39 +129,28 @@ export const QuizAttemptPage = () => {
         clearInterval(timerIntervalRef.current);
       }
     };
-  }, [currentQuestionIndex, answerChecked]);
+  }, [currentQuestionIndex, answerChecked, selectedOption, currentQuestion]);
   
-  // Reset timer warning when moving to next question
-  useEffect(() => {
-    setIsTimerWarning(false);
-  }, [currentQuestionIndex]);
+  // Removed as the timer warning reset is now handled in the timer effect
   
-  // Effect to move to next question after delay
+  // Effect to move to next question after delay (only for user-selected answers)
   useEffect(() => {
     let timer: NodeJS.Timeout;
     
-    if (answerChecked) {
+    if (answerChecked && selectedOption !== -1) {
       // Show explanation for 2 seconds
       setShowExplanation(true);
       
       // Move to next question after 3 seconds
       timer = setTimeout(() => {
-        if (isLastQuestion) {
-          handleFinishQuiz();
-        } else {
-          setCurrentQuestionIndex(prev => prev + 1);
-          setSelectedOption(null);
-          setAnswerChecked(false);
-          setIsCorrect(false);
-          setShowExplanation(false);
-        }
+        moveToNextQuestion();
       }, 3000);
     }
     
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [answerChecked, isLastQuestion]);
+  }, [answerChecked, isLastQuestion, selectedOption]);
 
   const handleOptionSelect = async (optionIndex: number) => {
     if (answerChecked || isSubmitting || !currentQuestion || !attemptId) return;
