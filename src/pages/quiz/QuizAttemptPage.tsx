@@ -15,6 +15,7 @@ export const QuizAttemptPage = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [timerHeight, setTimerHeight] = useState(0);
+  const [isTimerWarning, setIsTimerWarning] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const questionTimerDuration = 10000; // 10 seconds in milliseconds
 
@@ -26,6 +27,32 @@ export const QuizAttemptPage = () => {
   const currentQuestion: Question | undefined = questions?.[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === (questions?.length ?? 0) - 1;
   const progress = ((currentQuestionIndex + 1) / (questions?.length ?? 1)) * 100;
+
+  // Function to handle when time is up
+  const handleTimeUp = async () => {
+    if (answerChecked || isSubmitting || !currentQuestion || !attemptId) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Submit with a special value (-1) to indicate time's up / not attempted
+      await quizService.submitAnswer(attemptId, currentQuestion.id, -1);
+      
+      // Set selected option to -1 to indicate time's up
+      setSelectedOption(-1);
+      
+      // Mark as incorrect
+      setIsCorrect(false);
+      setAnswerChecked(true);
+      
+      // Show a message that time is up
+      setShowExplanation(true);
+    } catch (error) {
+      console.error('Failed to submit answer:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Effect to handle question timer
   useEffect(() => {
@@ -47,11 +74,23 @@ export const QuizAttemptPage = () => {
         const progress = Math.min(elapsedTime / questionTimerDuration, 1);
         setTimerHeight(progress * 100);
         
-        // If timer reaches 100%, auto-select a random option if none selected
+        // Set warning state when timer reaches 80%
+        if (progress >= 0.8 && !isTimerWarning) {
+          setIsTimerWarning(true);
+        } else if (progress < 0.8 && isTimerWarning) {
+          setIsTimerWarning(false);
+        }
+        
+        // If timer reaches 100% and no option selected, mark as not attempted
         if (progress >= 1 && selectedOption === null && !answerChecked) {
-          // Time's up - select a random option
-          const randomOption = Math.floor(Math.random() * (currentQuestion?.options.length || 4));
-          handleOptionSelect(randomOption);
+          // Time's up - mark as not attempted
+          handleTimeUp();
+          
+          // Clear the interval
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
         }
       }, intervalTime);
     }
@@ -62,6 +101,11 @@ export const QuizAttemptPage = () => {
       }
     };
   }, [currentQuestionIndex, answerChecked]);
+  
+  // Reset timer warning when moving to next question
+  useEffect(() => {
+    setIsTimerWarning(false);
+  }, [currentQuestionIndex]);
   
   // Effect to move to next question after delay
   useEffect(() => {
@@ -163,7 +207,7 @@ export const QuizAttemptPage = () => {
         {/* Vertical timer */}
         <div className="vertical-timer-container">
           <div 
-            className="vertical-timer-fill"
+            className={`vertical-timer-fill ${isTimerWarning ? 'warning' : ''}`}
             style={{ height: `${timerHeight}%` }}
           />
         </div>
@@ -222,10 +266,13 @@ export const QuizAttemptPage = () => {
         </div>
         
         {/* Explanation */}
-        {showExplanation && currentQuestion.explanation && (
+        {showExplanation && (
           <div className={`mt-6 p-4 rounded-lg ${isCorrect ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-            <p className="font-medium mb-1">{isCorrect ? '✓ Correct!' : '✗ Incorrect!'}</p>
-            <p>{currentQuestion.explanation}</p>
+            <p className="font-medium mb-1">
+              {selectedOption === -1 ? '⏱️ Time\'s Up!' : isCorrect ? '✓ Correct!' : '✗ Incorrect!'}
+            </p>
+            {currentQuestion.explanation && <p>{currentQuestion.explanation}</p>}
+            {selectedOption === -1 && <p>You didn't answer in time. The correct answer was: {currentQuestion.options[currentQuestion.correctOption]}</p>}
           </div>
         )}
 

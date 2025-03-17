@@ -129,6 +129,24 @@
   box-shadow: 0 0 8px rgba(79, 70, 229, 0.5);
 }
 
+/* Timer warning styles */
+.vertical-timer-fill.warning {
+  background: linear-gradient(to top, #EF4444, #F87171);
+  animation: pulse-warning 0.8s infinite;
+}
+
+@keyframes pulse-warning {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
 @keyframes timerAnimation {
   from {
     height: 0%;
