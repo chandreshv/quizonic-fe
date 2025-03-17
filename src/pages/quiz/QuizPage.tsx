@@ -82,22 +82,6 @@ export const QuizPage = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Duration: {quiz.duration} minutes
-          </div>
-          <div className="flex items-center">
-            <svg
-              className="w-5 h-5 mr-2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
                 d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
@@ -107,25 +91,7 @@ export const QuizPage = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Instructions</h2>
-        <ul className="space-y-3 text-gray-600">
-          <li className="flex items-start">
-            <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 bg-primary rounded-full"></span>
-            <span className="ml-2">You have {quiz.duration} minutes to complete the quiz.</span>
-          </li>
-          <li className="flex items-start">
-            <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 bg-primary rounded-full"></span>
-            <span className="ml-2">Each question has only one correct answer.</span>
-          </li>
-          <li className="flex items-start">
-            <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 bg-primary rounded-full"></span>
-            <span className="ml-2">You cannot return to previous questions once answered.</span>
-          </li>
-          <li className="flex items-start">
-            <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 bg-primary rounded-full"></span>
-            <span className="ml-2">A score of 70% or higher is required to pass the quiz.</span>
-          </li>
-        </ul>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Are you ready?</h2>
 
         <div className="mt-8 flex items-center justify-between">
           <button
