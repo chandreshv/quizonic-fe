@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 type TabType = 'user' | 'guest';
 
@@ -17,7 +18,10 @@ export const LoginOptions = () => {
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -44,8 +48,16 @@ export const LoginOptions = () => {
       // Navigate to guest home page with the guest name and age
       navigate('/guest', { state: { guestName, age } });
     } else {
-      // Handle user login (not implemented yet)
-      console.log('User login with:', { email, password });
+      // Handle user login
+      setIsLoading(true);
+      try {
+        await login({ email, password });
+        navigate('/dashboard', { replace: true });
+      } catch (err) {
+        setError('Invalid email or password');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -163,9 +175,16 @@ export const LoginOptions = () => {
             {/* Login Button */}
             <button
               type="submit"
-              className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              disabled={isLoading}
+              className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {activeTab === 'guest' ? 'Continue as Guest' : 'Login'}
+              {isLoading ? (
+                <span className="animate-spin h-5 w-5 text-white">
+                  ⏳
+                </span>
+              ) : (
+                activeTab === 'guest' ? 'Continue as Guest' : 'Login'
+              )}
             </button>
           </form>
         </div>
