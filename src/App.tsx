@@ -11,6 +11,7 @@ import { QuizAttemptPage } from './pages/quiz/QuizAttemptPage';
 import { QuizResultPage } from './pages/quiz/QuizResultPage';
 import { GuestHomePage } from './pages/home/GuestHomePage';
 import { LoginOptions } from './pages/auth/LoginOptions';
+import { DidYouKnowPage } from './pages/DidYouKnowPage';
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -84,6 +85,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <div>Profile Page (To be implemented)</div>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/did-you-know"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DidYouKnowPage />
                   </Layout>
                 </ProtectedRoute>
               }
